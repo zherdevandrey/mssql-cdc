@@ -1,0 +1,9 @@
+version: '3.8'
+
+services:
+  web:
+    image: nginx:latest
+    volumes:
+      - ./local-folder:/usr/share/nginx/html
+volumes:
+  web_data:
