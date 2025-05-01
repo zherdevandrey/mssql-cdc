@@ -1,0 +1,44 @@
+using System;
+
+using System.Data.SqlClient;
+using System.Data;
+using Microsoft.SqlServer.Server;
+using System.Net.Http;
+
+public class LaunchDispatchWrapper
+{
+
+
+    [SqlFunction]
+    public static void launchDispatch(int id)
+    {
+        using (SqlConnection conn = new SqlConnection("context connection=true"))
+        {
+            using (SqlCommand cmd = new SqlCommand("EXEC_DISPATCH", conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@id", id);
+
+                cmd.ExecuteNonQuery();
+
+            }
+        }
+
+        using (HttpClient client = new HttpClient())
+        {
+            String url = "http://localhost:8080/notify";
+            try
+            {
+                HttpResponseMessage response = client.GetAsync(url).Result;
+                string content = response.Content.ReadAsStringAsync().Result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Failed to call external url: " + url + ". " + ex.Message);
+            }
+        }
+
+    }
+
+}

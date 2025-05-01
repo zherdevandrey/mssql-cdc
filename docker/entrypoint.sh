@@ -13,5 +13,3 @@ sleep 10s
 
 # Keep the container running
 wait
-
-
